@@ -212,9 +212,10 @@ class Predictor(BasePredictor):
         flux_kwargs["width"] = width
         flux_kwargs["height"] = height
         pipe = self.txt2img_pipe
+        pipe.unload_lora_weights()
         if hf_loras:
             flux_kwargs["joint_attention_kwargs"] = {"scale": 1.0}
-            
+
         # Check for hf_loras and lora_scales 
         if hf_loras and not lora_scales:
             # If no lora_scales are provided, use 0.8 for each lora
