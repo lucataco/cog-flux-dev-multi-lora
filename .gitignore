@@ -1,5 +1,5 @@
 __pycache__
 .cog
-checkpoints
-weights-cache
+FLUX.1-dev
 safety-cache
+weights-cache
