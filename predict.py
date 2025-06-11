@@ -139,10 +139,13 @@ class Predictor(BasePredictor):
                 count += 1
                 self.txt2img_pipe.load_lora_weights(hf_lora, adapter_name=adapter_name)
             # Check for Replicate tar file
-            elif re.match(r"^https?://replicate.delivery/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+/trained_model.tar", hf_lora):
+            elif re.match(r"^https?://replicate.delivery/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+/(?:trained_model|flux-lora)\.tar", hf_lora):
                 print(f"Downloading LoRA weights from - Replicate URL: {hf_lora}")
                 local_weights_cache = self.weights_cache.ensure(hf_lora)
-                lora_path = os.path.join(local_weights_cache, "output/flux_train_replicate/lora.safetensors")
+                if hf_lora.endswith("trained_model.tar"):
+                    lora_path = os.path.join(local_weights_cache, "output/flux_train_replicate/lora.safetensors")
+                else: # flux_lora.tar
+                    lora_path = os.path.join(local_weights_cache, "flux-lora/flux-lora.safetensors")
                 adapter_name = names[count]
                 count += 1
                 self.txt2img_pipe.load_lora_weights(lora_path, adapter_name=adapter_name)
