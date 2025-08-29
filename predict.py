@@ -303,6 +303,17 @@ class Predictor(BasePredictor):
                 elif hf_loras and len(lora_scales) >= len(hf_loras):
                     # If lora_scales are provided, use them for each lora
                     self.load_loras(hf_loras, lora_scales)
+            else:
+                # LoRAs are already loaded, but we need to update the scales
+                if not lora_scales:
+                    lora_scales = [0.8] * len(hf_loras)
+                elif len(lora_scales) == 1:
+                    lora_scales = [lora_scales[0]] * len(hf_loras)
+                
+                # Update adapter weights with new scales
+                adapter_names = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'][:len(hf_loras)]
+                adapter_weights = lora_scales[:len(hf_loras)]
+                pipe.set_adapters(adapter_names, adapter_weights=adapter_weights)
         else:
             flux_kwargs["joint_attention_kwargs"] = None
             pipe.unload_lora_weights()
